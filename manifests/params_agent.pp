@@ -476,7 +476,7 @@ class wazuh::params_agent {
             { 'location' => '/var/log/secure', 'log_format' => 'syslog' },
             { 'location' => '/var/log/maillog', 'log_format' => 'syslog' },
           ]
-          case $::operatingsystem {
+          case $facts['os']['distro']['name'] {
             'SLES': {
               if ( $facts['os']['distro']['release']['full'] =~ /^(12|15).*/ ) {
                 $ossec_service_provider = 'redhat'
