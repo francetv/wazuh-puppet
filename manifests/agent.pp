@@ -266,7 +266,7 @@ class wazuh::agent (
   }
 
   # Package installation
-  case $::kernel {
+  case $facts['kernel'] {
     'Linux': {
       package { $agent_package_name:
         ensure => "${agent_package_version}-${agent_package_revision}", # lint:ignore:security_package_pinned_version
@@ -300,21 +300,21 @@ class wazuh::agent (
     default: { fail('OS not supported') }
   }
 
-  case $::kernel {
+  case $facts['kernel'] {
     'Linux': {
       ## ossec.conf generation concats
-      case $facts['os']['distro']['name'] {
+      case $facts['os']['name'] {
         'RedHat', 'OracleLinux', 'Suse': {
           $apply_template_os = 'rhel'
-          if ( $::operatingsystemrelease =~ /^9.*/ ) {
+          if ( $facts['os']['release']['full'] =~ /^9.*/ ) {
             $rhel_version = '9'
-          }elsif ( $::operatingsystemrelease =~ /^8.*/ ) {
+          }elsif ( $facts['os']['release']['full'] =~ /^8.*/ ) {
             $rhel_version = '8'
-          }elsif ( $::operatingsystemrelease =~ /^7.*/ ) {
+          }elsif ( $facts['os']['release']['full'] =~ /^7.*/ ) {
             $rhel_version = '7'
-          }elsif ( $::operatingsystemrelease =~ /^6.*/ ) {
+          }elsif ( $facts['os']['release']['full'] =~ /^6.*/ ) {
             $rhel_version = '6'
-          }elsif ( $::operatingsystemrelease =~ /^5.*/ ) {
+          }elsif ( $facts['os']['release']['full'] =~ /^5.*/ ) {
             $rhel_version = '5'
           }else {
             fail('This ossec module has not been tested on your distribution')
