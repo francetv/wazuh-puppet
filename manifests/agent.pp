@@ -620,7 +620,7 @@ class wazuh::agent (
 
   # SELinux
   # Requires selinux module specified in metadata.json
-  if ($::osfamily == 'RedHat' and $selinux == true) {
+  if ($facts['os']['family'] == 'RedHat' and $selinux == true) {
     selinux::module { 'ossec-logrotate':
       ensure    => 'present',
       source_te => 'puppet:///modules/wazuh/ossec-logrotate.te',
@@ -651,5 +651,4 @@ class wazuh::agent (
       require => Package[$wazuh::params_agent::agent_package_name],
     }
   }
-
 }
