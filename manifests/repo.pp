@@ -3,12 +3,12 @@
 class wazuh::repo (
 ) {
 
-  case $::osfamily {
+  case $facts['os']['family'] {
     'Debian' : {
       $wazuh_repo_url = 'https://packages.wazuh.com/4.x/apt'
       $repo_release = 'stable'
 
-      if $::lsbdistcodename =~ /(jessie|wheezy|stretch|precise|trusty|vivid|wily|xenial|yakketi|groovy)/
+      if $facts['os']['distro']['codename'] =~ /(jessie|wheezy|stretch|precise|trusty|vivid|wily|xenial|yakketi|groovy)/
       and ! defined(Package['apt-transport-https']) and ! defined(Package['gnupg']) {
         ensure_packages(['apt-transport-https', 'gnupg'], {'ensure' => 'present'})
       }
@@ -26,7 +26,7 @@ class wazuh::repo (
         mode   => '0644',
         require => Exec['import-wazuh-key'],
       }
-      case $::lsbdistcodename {
+      case $facts['os']['distro']['codename'] {
         /(jessie|wheezy|stretch|buster|bullseye|bookworm|sid|precise|trusty|vivid|wily|xenial|yakketi|bionic|focal|groovy|jammy)/: {
           apt::source { 'wazuh':
             ensure   => present,
@@ -65,10 +65,10 @@ class wazuh::repo (
       }
     }
     'Linux', 'RedHat', 'Suse' : {
-        case $::os[name] {
+        case $facts['os']['name'] {
           /^(CentOS|RedHat|OracleLinux|Fedora|Amazon|AlmaLinux|Rocky|SLES)$/: {
 
-            if ( $::operatingsystemrelease =~ /^5.*/ ) {
+            if ( $facts['os']['release']['full'] =~ /^5.*/ ) {
               $baseurl  = 'https://packages.wazuh.com/4.x/yum/5/'
               $gpgkey   = 'http://packages.wazuh.com/key/GPG-KEY-WAZUH'
             } else {
@@ -79,7 +79,7 @@ class wazuh::repo (
           default: { fail('This ossec module has not been tested on your distribution.') }
         }
         # Set up OSSEC repo
-        case $::os[name] {
+        case $facts['os']['name'] {
           /^(CentOS|RedHat|OracleLinux|Fedora|Amazon|AlmaLinux)$/: {
             yumrepo { 'wazuh':
               descr    => 'WAZUH OSSEC Repository - www.wazuh.com',
